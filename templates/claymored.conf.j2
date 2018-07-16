@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+description "claymore {{ claymore_ethdcr_version }}"
+
+start on runlevel [2345]
+stop on shutdown
+
+respawn
+respawn limit 10 5
+
+setuid claymore
+
+script
+  exec /usr/bin/tmux new-session -d -s ethm {{ claymore_ethdcr_bindir }}/start_%i.sh
+  /usr/bin/tmux split-window -h -p 50 -t 0 htop
+  /usr/bin/tmux split-window -v -p 5 -t 1 su -l claymore
+end script

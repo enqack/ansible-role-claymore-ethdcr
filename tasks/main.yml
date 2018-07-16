@@ -1,0 +1,101 @@
+
+---
+# tasks file for claymore
+
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}.yml"
+
+- name: "Check installed Claymore Dual Miner version"
+  shell: "{{ claymore_ethdcr_bindir }}/ethdcrminer64 -v 1"
+  register: claymore_installed_version
+  ignore_errors: yes
+  failed_when: false
+  changed_when: false
+  check_mode: no
+
+- name: Set fact if requested version of Claymore Dual Miner is already installed
+  set_fact: claymore_installed={{ claymore_installed_version.stdout_lines[0] is defined and claymore_installed_version.stdout_lines[0] == claymore_ethdcr_version | string }}
+
+- name: Download Claymore Dual Miner
+  get_url:
+    url: "{{ claymore_ethdcr_url }}"
+    dest: "/tmp/{{ claymore_archive_file }}"
+  when: not claymore_installed
+
+- name: Create claymore group
+  group:
+    name: claymore
+    system: true
+    state: present
+
+- name: Create claymore user
+  user:
+    name: claymore
+    group: claymore
+    state: present
+
+- name: Create install path
+  file:
+    path: "{{ claymore_ethdcr_bindir }}"
+    state: directory
+    mode: 0755
+
+- name: Extract Claymore Dual Miner
+  unarchive:
+    src: "/tmp/{{ claymore_archive_file }}"
+    dest: "{{ claymore_ethdcr_bindir }}"
+    extra_opts: ['--strip-components=1']
+    copy: false
+    owner: root
+    group: root
+  when: not claymore_installed
+  notify: [ "restart claymore" ]
+
+- name: Set user ID bit for ethdcrminer64
+  file:
+    path: "{{ claymore_ethdcr_bindir }}/ethdcrminer64"
+    mode: "u+s"
+  notify: [ "restart claymore" ]
+
+- name: Create Claymore startup script
+  template:
+    src: start_nanopool.sh.j2
+    dest: "{{ claymore_ethdcr_bindir }}/start_nanopool.sh"
+    mode: "ug+x"
+  notify: [ "restart claymore" ]
+
+- name: Create Claymore startup script
+  template:
+    src: start_nicehash.sh.j2
+    dest: "{{ claymore_ethdcr_bindir }}/start_nicehash.sh"
+    mode: "ug+x"
+  notify: [ "restart claymore" ]
+
+- name: Create Claymore epools.txt file
+  template:
+    src: epools.txt.j2
+    dest: "{{ claymore_ethdcr_bindir }}/epools.txt"
+    mode: "ug"
+  notify: [ "restart claymore" ]
+
+- name: Create Claymore dpools.txt file
+  template:
+    src: dpools.txt.j2
+    dest: "{{ claymore_ethdcr_bindir }}/dpools.txt"
+    mode: "ug"
+  notify: [ "restart claymore" ]
+
+- name: Install Claymore init script
+  template:
+    src: "{{ item.1 }}.j2"
+    dest: "{{ item.0 }}/{{ item.1 }}"
+  with_together:
+    - "{{ claymore_ethdcr_release_init_path_map[ansible_distribution_release]
+            if (ansible_distribution_release in claymore_ethdcr_release_init_path_map.keys())
+            else claymore_ethdcr_release_init_path }}"
+    - "{{ claymore_ethdcr_release_service_file_map[ansible_distribution_release]
+            if (ansible_distribution_release in claymore_ethdcr_release_service_file_map.keys())
+            else claymore_ethdcr_release_service_file }}"
+  notify: [ "reload systemd", "enable claymore", "restart claymore" ]

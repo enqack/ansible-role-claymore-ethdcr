@@ -1,0 +1,22 @@
+---
+# handlers file for claymore
+
+- name: reload systemd
+  command: systemctl daemon-reload
+
+- name: enable claymore
+  service:
+    name: "{{ claymore_ethdcr_release_service_name }}"
+    enabled: "{{ 'true' if claymore_ethdcr_service_state in ['present', 'enabled'] else 'false' }}"
+
+- name: restart claymore
+  service:
+    name: "{{ claymore_ethdcr_release_service_name }}"
+    state: restarted 
+
+- name: restart claymore ignore errors
+  service:
+    name: "{{ claymore_ethdcr_release_service_name }}"
+    state: restarted
+  ignore_errors: yes 
+  

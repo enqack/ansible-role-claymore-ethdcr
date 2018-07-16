@@ -1,0 +1,12 @@
+---
+# vars file for claymore
+
+claymore_install_path: /usr/local
+
+claymore_ethdcr_release_service_file_map:
+  'rhel6':  [ 'claymored.conf' ]
+  'rhel7':  [ 'claymored@.service' ]
+
+claymore_ethdcr_release_init_path_map:
+  'rhel6':  [ '/etc/init' ]
+  'rhel7':  [ '/etc/systemd/system' ]

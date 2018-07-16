@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+
+{% for pool in claymore_ethdcr_epools %}
+POOL: {{ pool.url }}, WALLET: {{ pool.wallet | default(claymore_ethdcr_default_wallet) }}, PSW: {{ pool.password | default('x') }}, WORKER: {{ pool.worker_name | default(ansible_hostname)}}, ESM: {{ pool.stratum_mode | default(0) }}, ALLPOOLS: {{ pool.allpools | default(1)}}
+
+{% endfor %}

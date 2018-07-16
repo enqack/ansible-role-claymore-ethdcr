@@ -1,0 +1,60 @@
+---
+# defaults file for claymore-ethdcr
+
+claymore_ethdcr_version: 10.2
+claymore_ethdcr_archive_provider: vendor
+
+claymore_ethdcr_archive_mirror: "https://drive.google.com/uc?id=1t25SK0lk2osr32GH623rR8aG2_qvZds9"
+claymore_archive_file: "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal AMD+NVIDIA GPU Miner v{{ claymore_ethdcr_version }} - LINUX.tar.gz"
+#claymore_ethdcr_url: "{{ claymore_ethdcr_archive_mirror }}/{{ claymore_archive_file }}"
+
+claymore_ethdcr_url: "{{ claymore_ethdcr_archive_mirror }}"
+
+# claymore_ethdcr_vendor_archives:
+#   linux:
+#     - { version: 10.0, url: 'https://drive.google.com/uc?id=0B69wv2iqszefNjNTUTdDRGw4eVE' }
+#     - { version: 10.1, url: https://drive.google.com/uc?id=0B69wv2iqszefdXFLSVRId29lQ3c }
+#     - { version: 10.2, url: https://drive.google.com/uc?id=1t25SK0lk2osr32GH623rR8aG2_qvZds9 }
+#   windows:
+#     - { version: 10.0, url: https://drive.google.com/uc?id=0B69wv2iqszefeVNXMU5KM1JVcHM }
+#     - { version: 10.1, url: https://drive.google.com/uc?id=0B69wv2iqszefX00xdlpTRkpvczA }
+#     - { version: 10.2, url:  }
+
+
+claymore_ethdcr_bindir: /usr/local/claymore 
+claymore_ethdcr_user: claymore
+claymore_ethdcr_group: claymore
+claymore_ethdcr_service_state: enabled
+claymore_ethdcr_release_service_name: claymored@nanopool
+claymore_ethdcr_release_service_file: claymored@.service
+claymore_ethdcr_release_init_path: /etc/systemd/system/ 
+
+claymore_ethdcr_worker_name: "{{ ansible_hostname }}"
+claymore_ethdcr_mgt_port: -3333
+claymore_ethdcr_mgt_password: x
+
+claymore_ethdcr_platform: 3
+claymore_ethdcr_mode: 0
+claymore_ethdcr_asm: 1
+claymore_ethdcr_etha: -1
+claymore_ethdcr_ethi: 8,8,8
+claymore_ethdcr_allpools: 1
+
+claymore_ethdcr_dcri: 30
+claymore_ethdcr_tt: 1
+claymore_ethdcr_ttli: 75
+claymore_ethdcr_tstop: 0
+
+claymore_ethdcr_failover_timeout: 30
+
+claymore_ethdcr_epools:
+  - url: eth-us-east1.nanopool.org:9999
+
+claymore_ethdcr_dpools: []
+
+claymore_ethdcr_wallet_address: !unsafe e0x
+
+ 
+
+
+

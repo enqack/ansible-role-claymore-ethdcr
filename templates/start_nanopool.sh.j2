@@ -1,0 +1,28 @@
+#!/bin/sh
+# {{ ansible_managed }}
+
+## Uncomment the following exports if they are not supplied by systemd `claymored.service`
+# export GPU_MAX_HEAP_SIZE=100
+# export GPU_USE_SYNC_OBJECTS=1
+# export GPU_MAX_ALLOC_PERCENT=100
+# export GPU_SINGLE_ALLOC_PERCENT=100
+
+exec {{ claymore_ethdcr_bindir }}/ethdcrminer64 \
+  -eworker {{ claymore_ethdcr_worker_name }} \
+  -mport {{ claymore_ethdcr_mgt_port }} \
+  -mpsw {{ claymore_ethdcr_mgt_password }} \
+  -platform {{ claymore_ethdcr_platform }} \
+  -mode {{ claymore_ethdcr_mode }} \
+{% if claymore_ethdcr_platform != 2 %}
+  -asm {{ claymore_ethdcr_asm }} \
+{% endif %}
+  -etha {{ claymore_ethdcr_etha }} \
+  -ethi {{ claymore_ethdcr_ethi }} \
+  -allpools {{ claymore_ethdcr_allpools }} \
+  -dcri {{ claymore_ethdcr_dcri }} \
+  -tt {{ claymore_ethdcr_tt }} \
+  -ttli {{ claymore_ethdcr_ttli }} \
+  -tstop {{ claymore_ethdcr_tstop }} \
+  -ftime {{ claymore_ethdcr_failover_timeout }} \
+  -cclock {{ claymore_ethdcr_cclock }} \
+  -mclock {{ claymore_ethdcr_mclock }}
